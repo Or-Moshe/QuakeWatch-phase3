@@ -73,13 +73,13 @@ livenessProbe:
   httpGet:
     path: /
     port: http
-    periodSeconds: 20
+    periodSeconds: 30
 
 readinessProbe:
   httpGet:
     path: /
     port: http
-    periodSeconds: 20
+    periodSeconds: 30
 
 env:
   APP_ENV: "dev"
