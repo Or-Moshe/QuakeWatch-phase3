@@ -40,6 +40,7 @@ spec:
           volumeMounts:
             - name: {{ .Values.persistentVolume.name }}
               mountPath: {{ .Values.persistentVolume.mountPath }}
+
           ports:
             - name: {{ .Values.service.name }}
               containerPort: {{ .Values.service.port }}
