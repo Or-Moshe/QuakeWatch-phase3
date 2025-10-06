@@ -105,9 +105,37 @@ jobs:
         run: |
           pylint *.py || true
 
-
-
-
+  helm-publish-docker:
+    name: Publish Helm Chart to Docker Hub
+    runs-on: ubuntu-latest
+    needs: PROD
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+  
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.0
+  
+      - name: Log in to Docker Hub for Helm
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        run: |
+          helm registry login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_ACCESS_TOKEN
+  
+      - name: Package Helm chart as OCI image
+        run: |
+         helm chart save ./charts/mychart ${{ secrets.DOCKER_HUB_USERNAME }}/mychart:$VERSION
+  
+      - name: Push Helm chart to Docker Hub
+        run: |
+          helm chart push ${{ secrets.DOCKER_HUB_USERNAME }}/mychart:$VERSION
+  
+  
+  
+  
 
 
 
