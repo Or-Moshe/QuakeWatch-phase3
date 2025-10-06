@@ -80,8 +80,8 @@ jobs:
     
     strategy:
       matrix:
-        python: [3.11, 3.12]
-        os: [ubuntu-latest, windows-latest]
+        python: [3.12]
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout code
@@ -119,15 +119,12 @@ jobs:
           version: v3.12.0
   
       - name: Log in to Docker Hub for Helm
-        env:
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
         run: |
-          helm registry login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_ACCESS_TOKEN
+           helm registry login oci://index.docker.io -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
   
       - name: Package Helm chart as OCI image
         run: |
-         helm chart save ./charts/mychart ${{ secrets.DOCKER_HUB_USERNAME }}/mychart:$VERSION
+           helm chart save ./charts/mychart ${{ secrets.DOCKER_HUB_USERNAME }}/mychart:$VERSION
   
       - name: Push Helm chart to Docker Hub
         run: |
