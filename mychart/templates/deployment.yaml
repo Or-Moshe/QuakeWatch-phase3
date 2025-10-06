@@ -46,14 +46,14 @@ spec:
 
           livenessProbe:
             httpGet:
-              path: /
-              port: http
-              periodSeconds: 20
+              path: {{ .Values.livenessProbe.httpGet.path }}
+              port: {{ .Values.livenessProbe.httpGet.port }}
+              periodSeconds: {{ .Values.livenessProbe.httpGet.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: /
-              port: http
-              periodSeconds: 20
+              path: {{ .Values.readinessProbe.httpGet.path }}
+              port: {{ .Values.readinessProbe.httpGet.port }}
+              periodSeconds: {{ .Values.readinessProbe.httpGet.periodSeconds }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
