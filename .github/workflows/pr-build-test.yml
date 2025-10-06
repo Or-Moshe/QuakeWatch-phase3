@@ -120,7 +120,7 @@ jobs:
   
       - name: Log in to Docker Hub for Helm
         run: |
-               helm registry login oci://index.docker.io \
+               helm registry login registry-1.docker.io \
                 -u ${{ secrets.DOCKER_HUB_USERNAME }} \
                 -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
   
