@@ -15,8 +15,8 @@ jobs:
     
     strategy:
       matrix:
-        python: [3.11, 3.12]
-        os: [ubuntu-latest, windows-latest]
+        python: [3.12]
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout code
@@ -127,7 +127,7 @@ jobs:
   
       - name: Package Helm chart as OCI image
         run: |
-           helm chart save ./charts/mychart ${{ secrets.DOCKER_HUB_USERNAME }}/mychart:$VERSION
+           helm package ./charts/mychart ${{ secrets.DOCKER_HUB_USERNAME }}/mychart/Chart:$VERSION
   
       - name: Push Helm chart to Docker Hub
         run: |
