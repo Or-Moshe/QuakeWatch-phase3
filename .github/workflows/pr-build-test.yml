@@ -127,11 +127,11 @@ jobs:
   
       - name: Package Helm chart as OCI image
         run: |
-          helm chart save ./charts/mychart myusername/mychart:0.1.0
+         helm chart save ./charts/mychart ${{ secrets.DOCKER_HUB_USERNAME }}/mychart:$VERSION
   
       - name: Push Helm chart to Docker Hub
         run: |
-          helm chart push myusername/mychart:0.1.0
+          helm chart push ${{ secrets.DOCKER_HUB_USERNAME }}/mychart:$VERSION
   
   
   
