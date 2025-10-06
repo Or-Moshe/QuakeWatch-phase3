@@ -8,7 +8,7 @@ on:
 
 jobs:
   DEV:
-    name: Build & Test
+    name: Build & Test For DEV
     runs-on: ${{ matrix.os }}
     environment: DEV
     
@@ -40,7 +40,7 @@ jobs:
           pylint *.py || true
 
   QA:
-    name: Build & Test
+    name: Build & Test For QA
     runs-on: ${{ matrix.os }}
     environment: QA
     needs: DEV
@@ -73,7 +73,7 @@ jobs:
           pylint *.py || true
 
   PROD:
-    name: Build & Test
+    name: Build & Test For PROD
     runs-on: ${{ matrix.os }}
     environment: PROD
     needs: QA
