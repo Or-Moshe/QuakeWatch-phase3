@@ -49,6 +49,7 @@ spec:
               path: {{ .Values.livenessProbe.httpGet.path }}
               port: {{ .Values.livenessProbe.httpGet.port }}
               periodSeconds: {{ .Values.livenessProbe.httpGet.periodSeconds }}
+
           readinessProbe:
             httpGet:
               path: {{ .Values.readinessProbe.httpGet.path }}
