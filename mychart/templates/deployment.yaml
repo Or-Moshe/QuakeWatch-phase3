@@ -19,6 +19,7 @@ spec:
       {{- end }}
       labels:
         {{- include "mychart.selectorLabels" . | nindent 8 }}
+      
     spec:
       serviceAccountName: {{ include "mychart.serviceAccountName" . }}
       securityContext:
@@ -27,6 +28,7 @@ spec:
         - name: {{ .Values.persistentVolume.name }}
           persistentVolumeClaim:
             claimName: {{ .Values.persistentVolumeClaim.name }}
+
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
