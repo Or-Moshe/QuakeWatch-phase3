@@ -8,36 +8,27 @@ on:
       - main
 
 jobs:
-  create-qa-pr:
+  action-pull-request:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Create pull request
+        uses: devops-infra/action-pull-request@v0.6
         with:
-          fetch-depth: 0
-
-      - name: Install GitHub CLI
-        run: |
-          sudo apt update
-          sudo apt install -y gh
-
-      - name: Authenticate GitHub CLI
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}  # PAT with repo permissions
-        run: |
-          gh auth login --with-token <<< "$GH_TOKEN"
-
-      - name: Create PR main → qa
-        id: create_pr
-        run: |
-          gh pr create \
-            --base qa \
-            --head main \
-            --title "Promote main to qa" \
-            --body "Automated PR to promote changes from main to qa" \
-            --reviewer @OWNER || echo "PR may already exist"
-
-      - name: Output PR URL
-        run: |
-          echo "PR URL: ${{ steps.create_pr.outputs.url }}"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: development
+          target_branch: master
+          title: Automatic pull request
+          template: .github/PULL_REQUEST_TEMPLATE.md
+          body: "**Automated pull request**"
+          reviewer: octocat
+          assignee: octocat
+          label: enhancement
+          milestone: My milestone
+          draft: true
+          old_string: "<!-- Add your description here -->"
+          new_string: "** Automatic pull request**"
+          get_diff: true
+          ignore_users: "dependabot"
+          allow_no_diff: false
