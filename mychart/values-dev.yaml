@@ -69,6 +69,17 @@ cronJob:
         exit 1
       fi
 
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+    periodSeconds: 30
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+    periodSeconds: 30
 
 env:
   APP_ENV: "dev"

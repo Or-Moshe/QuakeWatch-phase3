@@ -19,7 +19,7 @@ spec:
       {{- end }}
       labels:
         {{- include "mychart.selectorLabels" . | nindent 8 }}
-      
+
     spec:
       serviceAccountName: {{ include "mychart.serviceAccountName" . }}
       securityContext:
@@ -33,24 +33,30 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
           envFrom:
             - configMapRef:
                 name: {{ include "mychart.fullname" . }}-config
           volumeMounts:
             - name: {{ .Values.persistentVolume.name }}
               mountPath: {{ .Values.persistentVolume.mountPath }}
+
           ports:
             - name: {{ .Values.service.name }}
               containerPort: {{ .Values.service.port }}
               protocol: {{ .Values.service.protocol }}
+
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: {{ .Values.livenessProbe.httpGet.path }}
+              port: {{ .Values.livenessProbe.httpGet.port }}
+              periodSeconds: {{ .Values.livenessProbe.httpGet.periodSeconds }}
+
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: {{ .Values.readinessProbe.httpGet.path }}
+              port: {{ .Values.readinessProbe.httpGet.port }}
+              periodSeconds: {{ .Values.readinessProbe.httpGet.periodSeconds }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
