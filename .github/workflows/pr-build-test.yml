@@ -60,7 +60,7 @@ jobs:
     name: Build & Test For PROD
     runs-on: ${{ matrix.os }}
     environment: PROD
-    needs: QA
+    needs: merge-dev-to-qa
     
     strategy:
       matrix:
