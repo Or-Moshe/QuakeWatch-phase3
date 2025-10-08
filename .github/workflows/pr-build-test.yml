@@ -55,10 +55,9 @@ jobs:
 
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: dev
+          source_branch: main
           target_branch: qa
-          pr_title: "Automated Merge dev → qa"
-          merge_method: merge
+          title: "Automated Merge main → qa"
 
   PROD:
     name: Build & Test For PROD
