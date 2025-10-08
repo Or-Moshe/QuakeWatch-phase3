@@ -1,0 +1,43 @@
+name: Promote Dev to QA
+
+on:
+  workflow_dispatch:     # Manual trigger
+  pull_request:
+    types: [closed]  # Trigger after PR merged into main
+    branches:
+      - main
+
+jobs:
+  create-qa-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt update
+          sudo apt install -y gh
+
+      - name: Authenticate GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}  # PAT with repo permissions
+        run: |
+          gh auth login --with-token <<< "$GH_TOKEN"
+
+      - name: Create PR main → qa
+        id: create_pr
+        run: |
+          gh pr create \
+            --base qa \
+            --head main \
+            --title "Promote main to qa" \
+            --body "Automated PR to promote changes from main to qa" \
+            --reviewer @OWNER || echo "PR may already exist"
+
+      - name: Output PR URL
+        run: |
+          echo "PR URL: ${{ steps.create_pr.outputs.url }}"
