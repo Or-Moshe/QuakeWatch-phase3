@@ -52,20 +52,26 @@ jobs:
         uses: azure/setup-helm@v3
         with:
           version: v3.12.0
-  
+
+      - name: Set chart version
+        run: |
+          VERSION=$(grep '^version:' ./mychart/Chart.yaml | awk '{print $2}')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Detected version: $VERSION"
+          
+      - name: Package Helm chart as OCI image
+        run: |
+           helm package ./mychart ${{ secrets.DOCKER_HUB_USERNAME }}/mychart/Chart:$VERSION
+           
       - name: Log in to Docker Hub for Helm
         run: |
                helm registry login registry-1.docker.io \
                 -u ${{ secrets.DOCKER_HUB_USERNAME }} \
                 -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
   
-      - name: Package Helm chart as OCI image
-        run: |
-           helm package ./mychart/Chart ${{ secrets.DOCKER_HUB_USERNAME }}/mychart/Chart:$VERSION
-  
       - name: Push Helm chart to Docker Hub
         run: |
-          helm chart push ${{ secrets.DOCKER_HUB_USERNAME }}/mychart:$VERSION
+          helm push QuakeWatch-$VERSION.tgz oci://registry-1.docker.io/${{ secrets.DOCKER_HUB_USERNAME }}
   QA:
     name: Build & Test For QA
     runs-on: ${{ matrix.os }}
