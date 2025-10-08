@@ -6,7 +6,11 @@ on:
     types: [closed]  # Trigger after PR merged into main
     branches:
       - main
-
+      
+permissions:
+  contents: write
+  pull-requests: write
+  
 jobs:
   action-pull-request:
     runs-on: ubuntu-latest
