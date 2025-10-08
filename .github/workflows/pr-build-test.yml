@@ -71,7 +71,7 @@ jobs:
   
       - name: Push Helm chart to Docker Hub
         run: |
-          helm push QuakeWatch-$VERSION.tgz oci://registry-1.docker.io/${{ secrets.DOCKER_HUB_USERNAME }}
+          helm push mychart-$VERSION.tgz oci://registry-1.docker.io/${{ secrets.DOCKER_HUB_USERNAME }}
   QA:
     name: Build & Test For QA
     runs-on: ${{ matrix.os }}
