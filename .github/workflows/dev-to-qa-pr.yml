@@ -17,8 +17,8 @@ jobs:
         uses: devops-infra/action-pull-request@v0.6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: qa
-          target_branch: main
+          source_branch: main
+          target_branch: qa
           title: Automatic pull request
           body: "**Automated pull request**"
           new_string: "** Automatic pull request**"
