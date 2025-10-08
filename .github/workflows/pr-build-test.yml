@@ -40,17 +40,21 @@ jobs:
         run: |
           pylint *.py || true
     
-  QA:
-    name: Merge dev into qa
-    if: success()
-    uses: devops-infra/action-pull-request@v0.6
-    with:
-      github_token: ${{ secrets.GITHUB_TOKEN }}
-      source_branch: dev
-      target_branch: QA
-      pr_title: "Merge dev → qa after successful dev deployment"
-      pr_body: "Automated merge after successful dev deployment"
-      merge_method: merge
+  merge-dev-to-qa:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Merge dev → qa
+        uses: devops-infra/action-pull-request@v0.3.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: dev
+          target_branch: qa
+          pr_title: "Automated Merge dev → qa"
+          merge_method: merge
 
   PROD:
     name: Build & Test For PROD
