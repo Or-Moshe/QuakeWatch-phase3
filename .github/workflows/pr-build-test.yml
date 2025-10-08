@@ -55,9 +55,11 @@ jobs:
 
       - name: Set chart version
         run: |
-          VERSION=$(grep '^version:' ./mychart/Chart.yaml | awk '{print $2}')
+          PACKAGE_VERSION=$(grep '^version:' ./mychart/Chart.yaml | awk '{print $2}')
+          PACKAGE_NAME=$(grep '^name:' ./mychart/Chart.yaml | awk '{print $2}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Detected version: $VERSION"
+          echo "Detected version: $PACKAGE_VERSION"
+          echo "Detected name: $PACKAGE_NAME"
           
       - name: Package Helm chart as OCI image
         run: |
@@ -71,7 +73,7 @@ jobs:
   
       - name: Push Helm chart to Docker Hub
         run: |
-          helm push mychart-$VERSION.tgz oci://registry-1.docker.io/${{ secrets.DOCKER_HUB_USERNAME }}
+          helm push $PACKAGE_NAME-$PACKAGE_VERSION.tgz oci://registry-1.docker.io/${{ secrets.DOCKER_HUB_USERNAME }}
   QA:
     name: Build & Test For QA
     runs-on: ${{ matrix.os }}
