@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  QA:
+  TEST:
     name: Build & Test For QA
     runs-on: ${{ matrix.os }}
     environment: QA
@@ -39,6 +39,13 @@ jobs:
       - name: Run pylint
         run: |
           pylint *.py || true
+  all-tests-passed:
+    name: Build & Test For QA succeed
+    runs-on: ubuntu-latest
+    needs: TEST
+    if: always()
+    steps:
+      - run: echo "All matrix jobs passed ✅"
 
   
   
