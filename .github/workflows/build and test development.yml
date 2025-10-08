@@ -40,6 +40,7 @@ jobs:
         run: |
           pylint *.py || true
   all-tests-passed:
+    name: Build & Test For DEV succeed
     runs-on: ubuntu-latest
     needs: TEST
     if: always()
