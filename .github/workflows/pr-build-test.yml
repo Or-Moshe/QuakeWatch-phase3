@@ -61,7 +61,7 @@ jobs:
           
       - name: Package Helm chart as OCI image
         run: |
-           helm package ./mychart ${{ secrets.DOCKER_HUB_USERNAME }}/mychart/Chart:$VERSION
+           helm package ./mychart
            
       - name: Log in to Docker Hub for Helm
         run: |
