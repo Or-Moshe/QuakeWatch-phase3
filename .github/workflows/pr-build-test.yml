@@ -54,7 +54,7 @@ jobs:
         uses: devops-infra/action-pull-request@v0.6
 
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT_TOKEN }}
           source_branch: main
           target_branch: qa
           title: "Automated Merge main → qa"
