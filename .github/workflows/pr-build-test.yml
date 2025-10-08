@@ -40,15 +40,18 @@ jobs:
         run: |
           pylint *.py || true
     
-  merge-dev-to-qa:
+  merge-main-to-qa:
     runs-on: ubuntu-latest
-
+    environment: QA
+    needs: DEV
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        
       - name: Merge dev → qa
-        uses: devops-infra/action-pull-request@v0.3.2
+        uses: devops-infra/action-pull-request@v0.6
+
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_branch: dev
@@ -60,7 +63,7 @@ jobs:
     name: Build & Test For PROD
     runs-on: ${{ matrix.os }}
     environment: PROD
-    needs: merge-dev-to-qa
+    needs: merge-main-to-qa
     
     strategy:
       matrix:
