@@ -5,6 +5,7 @@ on:
     types: [opened, synchronize, reopened]
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   DEV:
@@ -14,8 +15,8 @@ jobs:
     
     strategy:
       matrix:
-        python: [3.11, 3.12]
-        os: [ubuntu-latest, windows-latest]
+        python: [3.12]
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout code
@@ -38,7 +39,7 @@ jobs:
       - name: Run pylint
         run: |
           pylint *.py || true
-
+    
   QA:
     name: Build & Test For QA
     runs-on: ${{ matrix.os }}
@@ -80,8 +81,8 @@ jobs:
     
     strategy:
       matrix:
-        python: [3.11, 3.12]
-        os: [ubuntu-latest, windows-latest]
+        python: [3.12]
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout code
@@ -117,21 +118,31 @@ jobs:
         uses: azure/setup-helm@v3
         with:
           version: v3.12.0
-  
-      - name: Log in to Docker Hub for Helm
-        env:
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set chart version
         run: |
-          helm registry login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_ACCESS_TOKEN
-  
+          PACKAGE_VERSION=$(grep '^version:' ./mychart/Chart.yaml | awk '{print $2}')
+          PACKAGE_NAME=$(grep '^name:' ./mychart/Chart.yaml | awk '{print $2}')
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+          echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
+          echo "Detected name: $PACKAGE_NAME"
+          echo "Detected version: $PACKAGE_VERSION"
+          
       - name: Package Helm chart as OCI image
         run: |
-         helm chart save ./charts/mychart ${{ secrets.DOCKER_HUB_USERNAME }}/mychart:$VERSION
+           helm package ./mychart
+           
+      - name: Log in to Docker Hub for Helm
+        run: |
+               helm registry login registry-1.docker.io \
+                -u ${{ secrets.DOCKER_HUB_USERNAME }} \
+                -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
   
       - name: Push Helm chart to Docker Hub
         run: |
-          helm chart push ${{ secrets.DOCKER_HUB_USERNAME }}/mychart:$VERSION
+          helm push ${PACKAGE_NAME}-${PACKAGE_VERSION}.tgz oci://registry-1.docker.io/${{ secrets.DOCKER_HUB_USERNAME }}
+
+  
   
   
   
