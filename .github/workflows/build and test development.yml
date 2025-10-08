@@ -1,4 +1,4 @@
-name: matrix
+name: build and test development
 
 on:
   pull_request:
